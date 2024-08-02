@@ -11,15 +11,72 @@ window = Tk()
 # sets the geometry of main 
 # root window
 window.geometry("750x500")
- 
-# function to open a new window 
-# on a button clic8
+window.title("Dog Park Experts")
+
 def mainPage():
     clear()
-    welcomeLabel = Label(window, 
+    favoritesLabel = Label(window, 
               text ="Here are our favorites:")
-    welcomeLabel.pack(pady=10)
-    
+    favoritesLabel.pack(pady=10)
+    userInfoBtn = Button(window, 
+             text ="User Info", 
+             command = userPage)
+    userInfoBtn.pack(pady = 10)
+
+    logoutBtn = Button(window, 
+             text ="Log out", 
+             command = loginPage)
+    logoutBtn.pack(pady = 10)
+
+    addParkBtn = Button(window, 
+             text ="Add a Park", 
+             command = addParkPage)
+    addParkBtn.pack(pady = 10)
+    parkBtn = Button(window, 
+             text ="Park", 
+             command = parkPage)
+    parkBtn.pack(pady = 10)
+
+def parkPage():
+    clear()
+    backBtn = Button(window, 
+             text ="Back", 
+             command = mainPage)
+    backBtn.pack(pady = 10)
+    reviewBtn = Button(window, 
+             text ="Add a Review", 
+             command = reviewPage)
+    reviewBtn.pack(pady = 10)
+
+def reviewPage():
+    clear()
+    backBtn = Button(window, 
+             text ="Back/Cancel", 
+             command = parkPage)
+    backBtn.pack(pady = 10)
+    submitBtn = Button(window, 
+             text ="Submit", 
+             command = parkPage)
+    submitBtn.pack(pady = 10)
+
+
+def userPage():
+    clear()
+    backBtn = Button(window, 
+             text ="Back", 
+             command = mainPage)
+    backBtn.pack(pady = 10)
+
+def addParkPage():
+    clear()
+    backBtn = Button(window, 
+             text ="Back", 
+             command = mainPage)
+    backBtn.pack(pady = 10)
+    submitBtn = Button(window, 
+             text ="Submit", 
+             command = mainPage)
+    submitBtn.pack(pady = 10)
 
 # citation for the following function:
 # Date: 07/31/24
@@ -30,19 +87,46 @@ def clear():
         widget.destroy()
 
  
-def login():
-    guestLabel = Label(window, 
-              text ="Welcome to Dog Park Experts")
- 
-    guestLabel.pack(pady = 10)
+def loginPage():
+    clear()
+    welcomeLabel = Label(window, 
+              text ="Welcome to Dog Park Experts!")
+    welcomeLabel.pack(pady = 10)
+
+    userLabel = Label(window, 
+              text ="username:")
+    userLabel.pack(pady = 10)
+
+    # citation for the following widget:
+    # Date: 08/01/24
+    # adapted from:
+    # https://www.geeksforgeeks.org/python-tkinter-text-widget/ 
+    userText= Text(window, height=1, width=20)
+    userText.pack()
+
+    passLabel = Label(window, 
+              text ="password:")
+    passLabel.pack(pady = 10)
+    passText= Text(window, height=1, width=20)
+    passText.pack()
  
 # a button widget which will open a 
 # new window on button click
-    btn = Button(window, 
+    loginBtn = Button(window, 
+             text ="Log in", 
+             command = mainPage)
+    loginBtn.pack(pady = 10)
+
+    
+    accountFeatureLabel = Label(window, 
+              text ="Create an account to track your visited parks or review and add new ones!")
+    accountFeatureLabel.pack(pady=100)
+    guestBtn = Button(window, 
              text ="Continue as Guest", 
              command = mainPage)
-    btn.pack(pady = 10)
+    guestBtn.pack(pady = 10)
+    
  
 # mainloop, runs infinitely
-login()
+loginPage()
 mainloop()
