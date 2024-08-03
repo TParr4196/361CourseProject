@@ -13,6 +13,8 @@ window = Tk()
 window.geometry("750x500")
 window.title("Dog Park Experts")
 
+import random
+
 def mainPage(shift):
     clear()
     userInfoBtn = Button(window, 
@@ -47,12 +49,12 @@ def mainPage(shift):
     favoritesLabel.pack(pady=10)
 
     parks=[]
-    file=open("park-service.txt", 'w', encoding="utf-8")
+    file=open("txts/park-service.txt", 'w', encoding="utf-8")
     file.write("r,")
     file.close()
     
     while len(parks)<=0:
-        file = open("park-service.txt", 'r', encoding="utf-8")
+        file = open("txts/park-service.txt", 'r', encoding="utf-8")
         input=file.readline()
         check=input.split(",")
         if check[0]=="RR":
@@ -62,31 +64,31 @@ def mainPage(shift):
                 else:
                     parks.append(line.split(","))
             file.close()
-            file = open("park-service.txt", 'w', encoding="utf-8")
+            file = open("txts/park-service.txt", 'w', encoding="utf-8")
             file.close()
 
     parkLeftArrow = Button(window, 
              text ="<-", 
              command = lambda: shiftDown(shift, len(parks)))
-    parkLeftArrow.pack(pady = 10, side=LEFT, padx= 20)
+    parkLeftArrow.pack(pady = 10, side=LEFT, padx= 50)
 
     parkBtnOne = Button(window, 
              text = parks[shift][0], 
-             command = lambda: parkPage(parks[shift]))
+             command = lambda: parkPage(parks[shift], 0))
     parkBtnOne.pack(pady = 10, side=LEFT)
     parkBtnTwo = Button(window, 
              text = parks[(shift+1)%len(parks)][0], 
-             command = lambda: parkPage(parks[(shift+1)%len(parks)]))
+             command = lambda: parkPage(parks[(shift+1)%len(parks)], 0))
     parkBtnTwo.pack(pady = 10, side=LEFT)
     parkBtnThree = Button(window, 
              text = parks[(shift+2)%len(parks)][0], 
-             command = lambda: parkPage(parks[(shift+2)%len(parks)]))
+             command = lambda: parkPage(parks[(shift+2)%len(parks)], 0))
     parkBtnThree.pack(pady = 10, side=LEFT)
 
     parkRightArrow = Button(window, 
              text ="->", 
              command = lambda: shiftUp(shift, len(parks)))
-    parkRightArrow.pack(pady = 10, side=LEFT, padx=25)
+    parkRightArrow.pack(pady = 10, side=LEFT, padx=50)
 
     addParkBtn = Button(window, 
              text ="Add a Park", 
@@ -100,7 +102,6 @@ def shiftUp(shift, parkNum):
         shift=0
     mainPage(shift)
     
-
 def shiftDown(shift, parkNum):
     if shift >=1:
         shift-=1
@@ -108,38 +109,85 @@ def shiftDown(shift, parkNum):
         shift=parkNum-1
     mainPage(shift)
 
-def parkPage(park):
+def parkPage(park, shift):
     clear()
     backBtn = Button(window, 
              text ="Back", 
              command = lambda:mainPage(0))
     backBtn.pack(pady = 0, anchor=NE)
 
+    reviews=[]
+    file=open("txts/review-service.txt", 'w', encoding="utf-8")
+    file.write("r;"+park[0])
+    file.close()
+
+    while len(reviews)<=0:
+        file = open("txts/review-service.txt", 'r', encoding="utf-8")
+        input=file.readline()
+        check=input.split(";")
+        if check[0]=="RR":
+            for line in file:
+                if line=="RR" or "":
+                    continue
+                else:
+                    reviews.append(line.split(";"))
+            file.close()
+            file = open("txts/review-service.txt", 'w', encoding="utf-8")
+            file.close()
+
+    ratings=0
+    tags=[]
+    pictures=[]
+    for review in reviews:
+        ratings+=float(review[0])
+        tag=review[2].split(',')
+        for t in tag:
+            if t not in tags:
+                tags.append(t)
+        pics=review[3].split(',')
+        for pic in pics:
+            if pic not in pics:
+                pictures.append(pic)
+    
+    ratings=ratings/len(reviews)
+
+    tagString="Tags: "
+    for tag in tags:
+        tagString+=tag+", "
+
+    nameLabel = Label(window, 
+              text =park[0])
+    nameLabel.pack(pady=10)
+    locationLabel = Label(window, 
+              text =park[1])
+    locationLabel.pack(pady=10)
+
+    ratingLabel = Label(window, text= str(ratings))
+    ratingLabel.pack(pady=10)
+
     tagsLabel = Label(window, 
-              text ="Tags:")
+              text = tagString)
     tagsLabel.pack(pady = 10)
 
+
     reviewsLabel = Label(window, 
-              text ="Reviews:")
+              text = reviews[random.randint(0,len(reviews)-1)][1])
     reviewsLabel.pack(pady = 10)
 
     reviewBtn = Button(window, 
              text ="Add a Review", 
              command = lambda:reviewPage(park))
-    nameLabel = Label(window, 
-              text =park[0])
-    nameLabel.pack(pady=10)
     reviewBtn.pack(pady = 0, side=BOTTOM, anchor=SE)
 
 def reviewPage(park):
     clear()
     backBtn = Button(window, 
              text ="Back/Cancel", 
-             command = parkPage)
+             command = lambda:parkPage(park, 0))
     backBtn.pack(pady = 0, anchor=NE)
 
     thankYouLabel = Label(window, 
-              text ="Thank you for Reviewing "+park[0]+"!")
+              text ="Thank you for Reviewing "+park[0]+"! You may add as much or as little information as you would like")
     thankYouLabel.pack(pady=10)
 
     ratingLabel = Label(window, 
@@ -147,6 +195,12 @@ def reviewPage(park):
     ratingLabel.pack(pady = 10)
     ratingText= Text(window, height=1, width=20)
     ratingText.pack()
+
+    reviewLabel = Label(window, 
+              text ="Review:")
+    reviewLabel.pack(pady = 10)
+    reviewText= Text(window, height=1, width=20)
+    reviewText.pack()
 
     tagsLabel = Label(window, 
               text ="Tags (please separate by a comma):")
@@ -165,9 +219,16 @@ def reviewPage(park):
 
     submitBtn = Button(window, 
              text ="Submit", 
-             command = lambda:parkPage(park))
+             command = lambda:submitReview(park, ratingText.get("1.0", "end-1c"), reviewText.get("1.0", "end-1c"), 
+                                           tagsText.get("1.0", "end-1c"), picText.get("1.0", "end-1c")))
     submitBtn.pack(pady = 0, side=BOTTOM, anchor=S)
     deleteLabel.pack(pady = 10, side=BOTTOM, anchor=SW)
+
+def submitReview(park, rating, review, tags, picURL):
+    file = open("txts/review-service.txt", 'w', encoding="utf-8")
+    file.write("w;"+park[0]+";"+rating+";"+review+";"+tags+";"+picURL)
+    file.close()
+    parkPage(park, 0)
 
 def userPage():
     clear()
@@ -248,8 +309,8 @@ def addParkPage():
     deleteLabel.pack(pady=10, side=BOTTOM, anchor=SW)
 
 def submitPark(nameText, locationText, picText):
-    file = open("park-service.txt", 'w', encoding="utf-8")
-    file.write("w,"+nameText+", "+locationText+", "+picText)
+    file = open("txts/park-service.txt", 'w', encoding="utf-8")
+    file.write("w,"+nameText+","+locationText+","+picText)
     file.close()
     mainPage(0)
     
