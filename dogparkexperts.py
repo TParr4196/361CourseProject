@@ -13,7 +13,7 @@ window = Tk()
 window.geometry("750x500")
 window.title("Dog Park Experts")
 
-def mainPage():
+def mainPage(shift):
     clear()
     userInfoBtn = Button(window, 
              text ="Track your parks: User Info", 
@@ -39,46 +39,80 @@ def mainPage():
 
     tagBtn = Button(window, 
              text ="Suggested tags here", 
-             command = mainPage)
+             command = lambda:mainPage(shift))
     tagBtn.pack(padx=10, pady = 10, anchor=NW)
 
     favoritesLabel = Label(window, 
               text ="Here are our favorites:")
     favoritesLabel.pack(pady=10)
 
+    parks=[]
+    file=open("park-service.txt", 'w', encoding="utf-8")
+    file.write("r,")
+    file.close()
+    
+    while len(parks)<=0:
+        file = open("park-service.txt", 'r', encoding="utf-8")
+        input=file.readline()
+        check=input.split(",")
+        if check[0]=="RR":
+            for line in file:
+                if line=="RR" or "":
+                    continue
+                else:
+                    parks.append(line.split(","))
+            file.close()
+            file = open("park-service.txt", 'w', encoding="utf-8")
+            file.close()
+
     parkLeftArrow = Button(window, 
              text ="<-", 
-             command = parkPage)
-    parkLeftArrow.pack(pady = 10, side=LEFT, padx= 95)
+             command = lambda: shiftDown(shift, len(parks)))
+    parkLeftArrow.pack(pady = 10, side=LEFT, padx= 20)
 
     parkBtnOne = Button(window, 
-             text ="Park", 
-             command = parkPage)
+             text = parks[shift][0], 
+             command = lambda: parkPage(parks[shift]))
     parkBtnOne.pack(pady = 10, side=LEFT)
     parkBtnTwo = Button(window, 
-             text ="Park", 
-             command = parkPage)
+             text = parks[(shift+1)%len(parks)][0], 
+             command = lambda: parkPage(parks[(shift+1)%len(parks)]))
     parkBtnTwo.pack(pady = 10, side=LEFT)
     parkBtnThree = Button(window, 
-             text ="Park", 
-             command = parkPage)
+             text = parks[(shift+2)%len(parks)][0], 
+             command = lambda: parkPage(parks[(shift+2)%len(parks)]))
     parkBtnThree.pack(pady = 10, side=LEFT)
 
     parkRightArrow = Button(window, 
              text ="->", 
-             command = parkPage)
-    parkRightArrow.pack(pady = 10, side=LEFT, padx=55)
+             command = lambda: shiftUp(shift, len(parks)))
+    parkRightArrow.pack(pady = 10, side=LEFT, padx=25)
 
     addParkBtn = Button(window, 
              text ="Add a Park", 
              command = addParkPage)
     addParkBtn.pack(pady = 0, side=BOTTOM, anchor=SE)
 
-def parkPage():
+def shiftUp(shift, parkNum):
+    if shift < parkNum-1:
+        shift+=1
+    else:
+        shift=0
+    mainPage(shift)
+    
+
+def shiftDown(shift, parkNum):
+    if shift >=1:
+        shift-=1
+    else:
+        shift=parkNum-1
+    mainPage(shift)
+
+def parkPage(park):
     clear()
     backBtn = Button(window, 
              text ="Back", 
-             command = mainPage)
+             command = lambda:mainPage(0))
     backBtn.pack(pady = 0, anchor=NE)
 
     tagsLabel = Label(window, 
@@ -91,13 +125,13 @@ def parkPage():
 
     reviewBtn = Button(window, 
              text ="Add a Review", 
-             command = reviewPage)
+             command = lambda:reviewPage(park))
     nameLabel = Label(window, 
-              text ="Park Name")
+              text =park[0])
     nameLabel.pack(pady=10)
     reviewBtn.pack(pady = 0, side=BOTTOM, anchor=SE)
 
-def reviewPage():
+def reviewPage(park):
     clear()
     backBtn = Button(window, 
              text ="Back/Cancel", 
@@ -105,7 +139,7 @@ def reviewPage():
     backBtn.pack(pady = 0, anchor=NE)
 
     thankYouLabel = Label(window, 
-              text ="Thank you for Reviewing Park Name!")
+              text ="Thank you for Reviewing "+park[0]+"!")
     thankYouLabel.pack(pady=10)
 
     ratingLabel = Label(window, 
@@ -126,16 +160,20 @@ def reviewPage():
     picText= Text(window, height=1, width=20)
     picText.pack()
 
+    deleteLabel = Label(window, 
+              text ="Your review can be deleted from the user info page.")
+
     submitBtn = Button(window, 
              text ="Submit", 
-             command = parkPage)
+             command = lambda:parkPage(park))
     submitBtn.pack(pady = 0, side=BOTTOM, anchor=S)
+    deleteLabel.pack(pady = 10, side=BOTTOM, anchor=SW)
 
 def userPage():
     clear()
     backBtn = Button(window, 
              text ="Back", 
-             command = mainPage)
+             command = lambda:mainPage(0))
     backBtn.pack(pady = 0, anchor=NE)
 
     usernameLabel = Label(window, 
@@ -174,8 +212,8 @@ def userPage():
 def addParkPage():
     clear()
     backBtn = Button(window, 
-             text ="Back", 
-             command = mainPage)
+             text ="Back/Cancel", 
+             command = lambda:mainPage(0))
     backBtn.pack(pady = 0, anchor=NE)
 
     thankYouLabel = Label(window, 
@@ -188,22 +226,33 @@ def addParkPage():
     nameText= Text(window, height=1, width=20)
     nameText.pack()
 
-    passLabel = Label(window, 
+    locationLabel = Label(window, 
               text ="Location:")
-    passLabel.pack(pady = 10)
-    passText= Text(window, height=1, width=20)
-    passText.pack()
+    locationLabel.pack(pady = 10)
+    locationText= Text(window, height=1, width=20)
+    locationText.pack()
 
     picLabel = Label(window, 
-              text ="Picture:")
+              text ="Picture URL:")
     picLabel.pack(pady = 10)
     picText= Text(window, height=1, width=20)
     picText.pack()
 
     submitBtn = Button(window, 
              text ="Add Park", 
-             command = mainPage)
+             command = lambda:submitPark(nameText.get("1.0", "end-1c"), locationText.get("1.0", "end-1c"), picText.get("1.0", "end-1c")))
     submitBtn.pack(pady = 0,side=BOTTOM, anchor=S)
+
+    deleteLabel = Label(window, 
+              text ="Your Park can be deleted from the user info page.")
+    deleteLabel.pack(pady=10, side=BOTTOM, anchor=SW)
+
+def submitPark(nameText, locationText, picText):
+    file = open("park-service.txt", 'w', encoding="utf-8")
+    file.write("w,"+nameText+", "+locationText+", "+picText)
+    file.close()
+    mainPage(0)
+    
 
 # citation for the following function:
 # Date: 07/31/24
@@ -241,11 +290,11 @@ def loginPage():
 # new window on button click
     loginBtn = Button(window, 
              text ="Log in", 
-             command = mainPage)
+             command = lambda:mainPage(0))
     loginBtn.pack(pady = 10)
     createAccountBtn = Button(window, 
              text ="Create an Account", 
-             command = mainPage)
+             command = lambda:mainPage(0))
     createAccountBtn.pack(pady = 10)
 
     
@@ -254,7 +303,7 @@ def loginPage():
     accountFeatureLabel.pack(pady=10)
     guestBtn = Button(window, 
              text ="Continue as Guest", 
-             command = mainPage)
+             command = lambda:mainPage(0))
     guestBtn.pack(pady = 90)
     
  
