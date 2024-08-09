@@ -224,11 +224,17 @@ def reviewPage(park):
     submitBtn.pack(pady = 0, side=BOTTOM, anchor=S)
     deleteLabel.pack(pady = 10, side=BOTTOM, anchor=SW)
 
-def submitReview(park, rating, review, tags, picURL):
+def submitReviewFinal(park, rating, review, tags, picURL):
     file = open("txts/review-service.txt", 'w', encoding="utf-8")
     file.write("w;"+park[0]+";"+rating+";"+review+";"+tags+";"+picURL)
     file.close()
     parkPage(park, 0)
+
+def submitReview(park, rating, review, tags, picURL):
+    clear()
+    message=Label(window, text ="Are you sure you wish to submit your review?").pack(side=TOP)
+    yesBtn = Button(window, text="Yes", command=lambda:submitReviewFinal(park, rating, review, tags, picURL)).pack(padx=200,side=LEFT)
+    noBtn = Button(window, text="No", command=lambda:reviewPage(park)).pack(side=LEFT)
 
 def userPage():
     clear()
@@ -308,11 +314,17 @@ def addParkPage():
               text ="Your Park can be deleted from the user info page.")
     deleteLabel.pack(pady=10, side=BOTTOM, anchor=SW)
 
-def submitPark(nameText, locationText, picText):
+def submitParkFinal(nameText, locationText, picText):
     file = open("txts/park-service.txt", 'w', encoding="utf-8")
     file.write("w,"+nameText+","+locationText+","+picText)
     file.close()
     mainPage(0)
+
+def submitPark(nameText, locationText, picText):
+    clear()
+    message=Label(window, text ="Are you sure you wish to submit your park?").pack(side=TOP)
+    yesBtn = Button(window, text="Yes", command=lambda:submitParkFinal(nameText, locationText, picText)).pack(padx=200,side=LEFT)
+    noBtn = Button(window, text="No", command=lambda:mainPage(0)).pack(side=LEFT)
     
 
 # citation for the following function:
