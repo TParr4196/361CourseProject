@@ -1,3 +1,5 @@
+import time
+
 while True:
     file = open("txts/park-service.txt", 'r', encoding="utf-8")
     input = file.readline()
@@ -27,5 +29,6 @@ while True:
             if output == "RR,\n":
                 file.write(",,\n")
             print("Read parks")
-
+    file.flush()
+    time.sleep(0.2)
     file.close

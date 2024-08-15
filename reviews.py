@@ -1,3 +1,5 @@
+import time
+
 while True:
     file = open("txts/review-service.txt", 'r', encoding="utf-8")
     input = file.readline()
@@ -29,5 +31,6 @@ while True:
                 output+="0;No Reviews yet;none;nonpic\n"
                 file.write("0;No Reviews yet;none;nonpic\n")
             print("Read parks: \n"+output)
-
+    file.flush()
+    time.sleep(0.2)
     file.close
