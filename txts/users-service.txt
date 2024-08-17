@@ -1,1 +1,1 @@
-RR|Found|Verified
+RR|Found|NotVerified|user|password

@@ -1,11 +1,12 @@
 import tkinter as tk
 from tkinter import simpledialog
+import time
 
 user_alert = []
 while True:
     file = open("txts/servicea.txt", 'r')
     users = file.readline()
-    if users is not None or users=='':
+    if users is not None and users!='' and users!="\n" and users.split(":")[0]!="Do Not Forget to Schedule your Pets vaccination by the following date":
         file.close()
         root = tk.Tk()
         root.withdraw()
@@ -18,6 +19,7 @@ while True:
         print("Reminder schedule your pet for their next vaccinations before:", user_input)
 
         root.quit()
-
     else:
-        print("There are no registered users yet, please register before setting your alert")
+        file.close()
+        time.sleep(0.5)
+        #print("There are no registered users yet, please register before setting your alert")

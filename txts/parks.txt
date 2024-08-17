@@ -3,9 +3,3 @@ Riverbend,799 SW Columbia St,https://www.bendparksandrec.org/wp-content/uploads/
 Pine Nursery,3750 NE Purcell Blvd,https://www.bendparksandrec.org/wp-content/uploads/2015/05/X4A3314-e1710191831414.jpg
 River Canyon,61005 Snowbrush Dr,https://www.bendparksandrec.org/wp-content/uploads/2015/05/River-Canyon-Natural-Area-091814-10.jpg
 hellothere,blue,here
-video,here,
-new,park,
-hellothere	,new,
-herer,,
-newpark1,,
-park1,,

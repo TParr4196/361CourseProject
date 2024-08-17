@@ -1,2 +1,4 @@
 user|password
 newus|pass
+test|ihateithere
+neator|burritor

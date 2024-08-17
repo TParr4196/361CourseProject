@@ -31,6 +31,43 @@ while True:
                 output+="0;No Reviews yet;none;nonpic\n"
                 file.write("0;No Reviews yet;none;nonpic\n")
             print("Read parks: \n"+output)
+
+        if check[0]=='dd':
+            file = open("txts/reviews.txt", 'r', encoding="utf-8")
+            reviews = []
+            for line in file:
+                reviews.append(line.split(";"))
+            file.close()
+
+            file = open("txts/reviews.txt", 'w', encoding="utf-8")
+            found = False
+            for review in reviews:
+                if review[1]==check[2]:
+                    reviews.remove(review)
+                    found = True
+                    break
+            
+            # Citation for the following writelines() function:
+            # Date: 08/16/24
+            # adapted from:
+            # https://www.w3schools.com/python/ref_file_writelines.asp
+            file.writelines(";".join(r) for r in reviews)
+            file.flush()
+            time.sleep(0.2)
+            file.close()
+            
+            file = open("txts/review-service.txt", 'w', encoding="utf-8")
+
+            if not found:
+                print("review not found")
+                file.write("RR;NotFound")
+            else:
+                print("deleted review "+check[1])
+                file.write("RR;Deleted;"+check[1])
+    # Citation for the following flush() function:
+    # Date: 08/15/24
+    # Copied from:
+    # https://www.geeksforgeeks.org/file-flush-method-in-python/
     file.flush()
     time.sleep(0.2)
-    file.close
+    file.close()

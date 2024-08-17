@@ -29,6 +29,42 @@ while True:
             if output == "RR,\n":
                 file.write(",,\n")
             print("Read parks")
+
+        if check[0]=='dd':
+            file = open("txts/parks.txt", 'r', encoding="utf-8")
+            parks = []
+            for line in file:
+                parks.append(line.split(","))
+            file.close()
+
+            file = open("txts/parks.txt", 'w', encoding="utf-8")
+            found = False
+            for park in parks:
+                if park[0]==check[1]:
+                    parks.remove(park)
+                    found = True
+                    break
+
+            # Citation for the following writelines() function:
+            # Date: 08/16/24
+            # Adapted from:
+            # https://www.w3schools.com/python/ref_file_writelines.asp
+            file.writelines(",".join(p) for p in parks)
+            file.flush()
+            time.sleep(0.2)
+            file.close()
+            file = open("txts/park-service.txt", 'w', encoding="utf-8")
+
+            if not found:
+                print("park not found")
+                file.write("RR,NotFound")
+            else:
+                print("deleted park "+check[1])
+                file.write("RR,Deleted,"+check[1])
+    # Citation for the following flush() function:
+    # Date: 08/15/24
+    # Copied from:
+    # https://www.geeksforgeeks.org/file-flush-method-in-python/
     file.flush()
     time.sleep(0.2)
     file.close
